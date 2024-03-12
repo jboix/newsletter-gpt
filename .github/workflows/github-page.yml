@@ -1,0 +1,40 @@
+name: GitHub Page 📄
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  github-page:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 🔄
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js environment ⚙️
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies 📦
+        env:
+          CI: true
+        run: |
+          npm pkg delete scripts.prepare
+          npm ci
+
+      - name: Run build 🏗️
+        run: |
+          npm run build
+
+      - name: Deploy GitHub Page 🚀
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          branch: gh-pages
+          folder: dist
+          force: true
